@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Wallsplash - Settings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap-timepicker.min.css">
+</head>
+<body>
+  <div class="container">
+    <form style="padding-top: 20px">
+     <div class="form-group">
+      <label>Change interval</label>
+      <div class="input-group bootstrap-timepicker timepicker">
+        <input id="intervalpicker" type="text" class="form-control input-small">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Wallpaper resolution</label>
+      <select id="resolution" class="form-control">
+        <option value="2880x1800">2880 x 1800</option>
+        <option value="2560x1600">2560 x 1600</option>
+        <option value="2560x1440">2560 x 1440</option>
+        <option value="1920x1200">1920 x 1200</option>
+        <option value="1920x1080">1920 x 1080</option>
+        <option value="1400x900">1440 x 900</option>
+        <option value="1366x168">1366 x 768</option>
+        <option value="1280x800">1280 x 800</option>
+      </select>
+      <div class="checkbox">
+        <label>
+        <input id="autostart" type="checkbox"> Launch on system startup 
+        </label>
+      </div>
+      <button id = "cancel-button" class="btn btn-default">Cancel</button>
+      <button id = "save-button" class="btn btn-primary">Save</button>
+    </form>
+  </div>
+</div>
+
+<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/bootstrap-timepicker.min.js"></script>
+<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+<script type="text/javascript">
+  window.onload = function() {
+    $("#intervalpicker").timepicker(
+    {
+     disableFocus: true,
+     showInputs: false,
+     showSeconds: true,
+     showMeridian: false,
+     defaultValue: '00:02:00'
+   });}
+ </script>
+ <script>
+  const Configstore = require('configstore');
+  const pkg = require('./package.json');
+  const conf = new Configstore(pkg.name);
+  const ipcRenderer = require('electron').ipcRenderer;
+
+
+  $('#resolution option[value="'+ conf.get('resolution')+'"]').attr("selected", true);
+  $('#intervalpicker').val(conf.get('interval'));
+  $('#autostart').prop('checked', conf.get('autostart'));
+
+  $('#save-button').on('click', function(e){
+    e.preventDefault();
+    conf.set('resolution', $('#resolution').val());
+    conf.set('autostart', $('#autostart').prop('checked'));
+    var interval = $('#intervalpicker').val();
+    if(interval != conf.get('interval')){
+      conf.set('interval', interval);
+      ipcRenderer.send('set-interval', interval);
+    }
+    window.close();
+  });
+  $('#cancel-button').on('click', function(e){
+    e.preventDefault();
+    window.close();
+  });
+</script>
+
+</body>
+</html>

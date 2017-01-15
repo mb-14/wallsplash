@@ -1,0 +1,19 @@
+{
+  "name": "wallsplash",
+  "version": "1.0.0",
+  "description": "Daily wallpapers from unsplash.com",
+  "dependencies": {
+    "request": "2.79.0",
+    "wallpaper" : "2.3.0",
+    "configstore" : "2.1.0"
+  },
+  "devDependencies": {
+   "electron": "^1.4.1",
+   "electron-packager": "^8.5.0"
+  },
+ "scripts": {
+    "start": "electron .",
+    "build": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds"
+  },
+ "main": "main.js"
+}
